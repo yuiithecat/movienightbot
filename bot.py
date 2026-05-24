@@ -8,7 +8,8 @@ TOKEN = os.getenv("BOT_TOKEN")
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot)
 
-FILMS_FILE = "films.txt"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FILMS_FILE = os.path.join(BASE_DIR, "films.txt")
 
 
 def get_items(item_type=None):
