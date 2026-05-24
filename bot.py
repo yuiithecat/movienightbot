@@ -123,7 +123,7 @@ async def list_other(message: types.Message):
     await message.answer(text)
 
 
-@dp.message_handler()
+@dp.message_handler(lambda m: m.text and not m.text.startswith("/"))
 async def add_item_handler(message: types.Message):
     text = message.text.strip()
 
