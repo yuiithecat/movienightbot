@@ -10,6 +10,7 @@ dp = Dispatcher(bot)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FILMS_FILE = os.path.join(BASE_DIR, "films.txt")
+USERS_FILE = os.path.join(BASE_DIR, "users.txt") 
 
 
 def get_items(item_type=None):
@@ -33,9 +34,28 @@ def add_item(item_type, title):
     with open(FILMS_FILE, "a", encoding="utf-8") as f:
         f.write(f"{item_type}|{title}\n")
 
+def get_users():
+    if not os.path.exists(USERS_FILE):
+        return []
+
+    with open(USERS_FILE, "r") as f:
+        return [line.strip() for line in f]
+
+
+def save_user(user_id):
+    users = get_users()
+
+    if str(user_id) not in users:
+        with open(USERS_FILE, "a") as f:
+            f.write(f"{user_id}\n")
+
 
 @dp.message_handler(commands=["start"])
 async def start(message: types.Message):
+    print(message.from_user.id)
+
+    save_user(message.from_user.id)
+    
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
     keyboard.add(
         "🎬 Случайный фильм",
@@ -140,6 +160,32 @@ async def add_item_handler(message: types.Message):
     elif item_type == "м":
         await message.answer("🧸 Мульт добавлен! Кошечка, ты супер хот")
 
+ADMIN_ID = 123456789
 
+@dp.message_handler(commands=["broadcast"])
+async def broadcast(message: types.Message):
+
+    if message.from_user.id != ADMIN_ID:
+        return
+
+    text = message.get_args()
+
+    if not text:
+        await message.answer("Напиши текст после команды")
+        return
+
+    users = get_users()
+
+    sent = 0
+
+    for user_id in users:
+        try:
+            await bot.send_message(user_id, text)
+            sent += 1
+        except:
+            pass
+
+    await message.answer(f"Отправлено: {sent}")
+    
 if __name__ == "__main__":
     executor.start_polling(dp)
