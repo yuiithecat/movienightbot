@@ -52,7 +52,6 @@ def save_user(user_id):
 
 @dp.message_handler(commands=["start"])
 async def start(message: types.Message):
-    await message.answer(str(message.from_user.id))
 
     save_user(message.from_user.id)
     
@@ -160,7 +159,7 @@ async def add_item_handler(message: types.Message):
     elif item_type == "м":
         await message.answer("🧸 Мульт добавлен! Кошечка, ты супер хот")
 
-ADMIN_ID = 123456789
+ADMIN_ID = 747731796
 
 @dp.message_handler(commands=["broadcast"])
 async def broadcast(message: types.Message):
