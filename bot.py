@@ -52,7 +52,7 @@ def save_user(user_id):
 
 @dp.message_handler(commands=["start"])
 async def start(message: types.Message):
-    print(message.from_user.id)
+    await message.answer(str(message.from_user.id))
 
     save_user(message.from_user.id)
     
